@@ -1,71 +1,14 @@
-\documentclass{article}
-\usepackage[utf8]{inputenc}
-\usepackage{geometry}
-\geometry{a4paper, portrait, margin=0.75in}
-\usepackage{fancyhdr}
-\usepackage{wasysym}
-\usepackage{makecell}
-\usepackage{multicol}
-\usepackage{graphicx}
-\usepackage{amsmath}
-\usepackage{enumitem}
-\usepackage{array}
-\usepackage{esvect}
-\usepackage{cancel}
-\usepackage{float}
-\usepackage{mathtools}
-\usepackage{setspace}
-
-\usepackage{xcolor}
-
-\usepackage[english]{babel}
-\usepackage[backend=biber,sorting=ynt]{biblatex}
-\addbibresource{sources.bib}
-\setstretch{1.0}
-
-%tikz packages
-\usepackage{tikz}
-\usepackage{mathpazo}
-\usepackage{circuitikz}
-\usetikzlibrary{calc} 
-\usetikzlibrary{patterns,hobby,decorations.pathmorphing}
-\usetikzlibrary{patterns}
-\usetikzlibrary{arrows}
-\usetikzlibrary{shapes.geometric}
-\tikzset{
-    body/.style={inner sep=0pt,outer sep=0pt,shape=rectangle,draw,thick},
-    dimen/.style={<->,>=latex,thin,every rectangle node/.style={fill=white,midway,font=\sffamily}},
-    symmetry/.style={dashed,thin},
-}
-
-%header
-\lhead{Brian Mingels, URI, Fall 2023}
-\rhead{WaterLily Force Routine Validation}
-
-\begin{document}
-\thispagestyle{fancy}
-
-\section{Abstract}
 Simulation approaches to fluid structure interaction problems such as flow over a cylinder or sphere, often require calculations of the force experienced on the modeled geometry, imposed by the fluid. The flow model WaterLily, written in the Julia programming language, previously ran exclusively on the CPU, but recent milestones in its development as well as improvements made to Julia have led to support for GPU processing which is considerably faster computationally than CPU processing. The verified force routine originally developed for WaterLily utilized discrete scalar indexing as a means to map pressure elements to their respective area elements on the modeled geometry. GPU processing however does not run efficiently with this type scalar indexing so a new routine was developed to accompany the GPU processing of WaterLily, while remaining sufficiently general enough to still run on a CPU if a GPU is not present. Force validation is done by computing scaled lift and drag forces on commonly accepted, well studied, canonical 2D and 3D geometries such as a circle, cylinder, sphere, normal facing disk plate, and a NACA0012 airfoil. Geometries with moving boundaries are also verified in this work for problems involving forced motion of a cylinder for both 1 and 2 degrees of freedom. With the exception of the dynamic boundary cases, a Reynolds number of 10,000, was used for all geometries and the results are compared to measured and or direct numerical simulation (DNS) data of these geometries. The results of this study show that the new force routine with GPU processing agrees very well with measured and DNS results, reinforcing that this force routine is sufficient for all arbitrary geometries.
 
-\section{WaterLily Flow Model}
 WaterLily is a computationally very fast flow solver written in Julia, capable of solving the unsteady Navier-Stokes equation and pressure Poisson equation on a 2D or 3D Cartesian grid \cite{waterlily}. The model utilizes a Boundary Data Immersion Method (BDIM) developed by Weymouth and Yue \cite{bdim} which allows for combining the fluid equations with the body equations analytically in to a single meta equation. This approach evaluates the fluid structure interaction effects via convolution through the distance between the body and flow as a means of a weighting function. The method itself is verified to second order accuracy through studies of canonical flow problems such as Poiseuille flow.
 
-\subsection{Characterizing and Setting Up the Model}
 WaterLily is able to be initialized and run with a set of fully non-dimensional parameters, allowing for scaling across any modeled dimension. The domain size is set up by defining an effective resolution which will be described as $n=2^p$. This value of $n$ is used as a reference for defining the 2 or 3 dimensional lengths of the domain, and can also be used to easily scale the body geometry's characteristic length. In this paper, with the exception of the airfoil, all modeled geometries have a radius $r$, which can be defined as $r=n/20$. With the lengths of the domain characterized, the flow must also now be described, which can be done by a characteristic free stream flow velocity, and a Reynolds number. With the way that the model is set up with everything being dimensionless, it is convenient to use $U=1$ as the flow velocity scale and then govern the flow by the kinematic viscosity as described by $\nu=U\cdot r/Re$.
 
-Defining the body geometry itself in WaterLily is done by a signed distance function (SDF), and a ``map" function for translating and rotating. Briefly, an SDF is a general formula for quickly calculating the shortest distance from an arbitrary point $P$ in space, to the nearest point found on the body. The simplest case of this is a circle which is translated to the center of a 2D domain, as shown in figure \ref{fig:sdf_example}.
+Defining the body geometry itself in WaterLily is done by a signed distance function (SDF), and a "map" function for translating and rotating. Briefly, an SDF is a general formula for quickly calculating the shortest distance from an arbitrary point $P$ in space, to the nearest point found on the body. The simplest case of this is a circle which is translated to the center of a 2D domain, as shown in figure \ref{fig:sdf_example}.
 
-\begin{equation}
-    % sdf_{circle}(\vec{x},t) = \sqrt{(P_x-c_x)^2 + (P_y-c_y)^2} - r
-    sdf_{circle}(\vec{x},t) = \sqrt{P_x^2 + P_y^2} - r
-\end{equation}
-\begin{equation}
-    map_{center}(\vec{x},t) = [P_x, P_y] - [c_x, c_y]
-\end{equation}
-% \begin{center}
-%         \text{where $\vec{x}$ is a 2D vector spanning the domain space}
-% \end{center}
+$$sdf_{circle}(\vec{x},t) = \sqrt{P_x^2 + P_y^2} - r$$
+
+$$map_{center}(\vec{x},t) = [P_x, P_y] - [c_x, c_y]$$
 
 \begin{figure}[H]
     \centering
