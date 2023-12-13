@@ -49,17 +49,11 @@ SDFs can be extended to 3D geometries by adding a third dimension and because of
 \subsection{Force Calculation}
 The force calculation in WaterLily, fundamentally, computes a surface integral about the body by summing all of the pressure values on the body geometry multiplied by their respective discretized areas (or line segments if in 2D). The gradient is then used to project the force to its vector components as a means to observe lift and drag independently. The generalized analytic equation of this is shown in equation \ref{eqn:surf_int}, where $\Omega_b$ is the arbitrary body, $p$ is pressure, $\hat{n}$ is the gradient unit vector, and $\vec{x}_b$ is a discrete point on the body.
 
-\begin{equation}
-    \vec{f} = \oint_{\partial\Omega_b}p(\vec{x}_b)\hat{n}(\vec{x}_b)d\vec{x}_b
-    \label{eqn:surf_int}
-\end{equation}
+$$\vec{f} = \oint_{\partial\Omega_b}p(\vec{x}_b)\hat{n}(\vec{x}_b)d\vec{x}_b$$
 
 The previous version of this force routine ran by cycling through every point in the domain and finding values that lie on the geometry boundary by searching for SDF values between -1 and 1. If that criteria was met, that point was used to calculate the gradient on the body via the SDF, and then multiplied by the pressure at that point. Because of the BDIM methods functionality, a convolutional kernel is also evaluated with the signed distance to compensate for the layer in between the body and the fluid. This kernel integration is shown in equation \ref{eqn:kernel_int}, where $d$ is the SDF distance. This function is very convenient for general processing in this case, because by clamping the signed distance between -1 and 1, all points larger than that will result in zero force during the integral calculation.
 
-\begin{equation}
-    \mathcal{K}(d) = \frac{1}{2}+\frac{1}{2}\cos{(\pi d)}
-    \label{eqn:kernel_int}
-\end{equation}
+$$\mathcal{K}(d) = \frac{1}{2}+\frac{1}{2}\cos{(\pi d)}$$
 
 Because of the way the previous force routine loops through every discrete point in the domain to calculate the signed distance to the geometry, it is not ideal for GPU processing, however it is difficult to avoid scalar indexing for a calculation such as this. Using a Julia package ``\textit{KernelAbstractions.jl}", GPU-like kernels can be developed (\textit{i.e.}, high throughput processing designed for parallel, accelerated processing) which in this case allows for scalar indexing suited for GPU processing to be done fast and efficiently \cite{kernelabs}. The new force routine works by first computing the gradient multiplied by the kernel integration distance at every point in the domain, resulting in an array the size of the full domain where points that do not lie on the geometry boundary are 0. Then this array is simply multiplied by the array containing pressure at every point in the domain, and finally a summation is run to achieve the force components. Steps 1 and 2 of this algorithm utilize the \textit{KernelAbstractions} package for fast and efficient GPU indexing, with seemingly no hindrance to CPU processing if a GPU is not present.
 
@@ -254,20 +248,17 @@ The results of the convergence testing on the geometries is shown in figure X. I
 \subsection{Forced Motion Vortex Induced Vibrations}
 Forced motion is a technique originally presented by Sarpkaya which uses the lift and drag coefficients calculated by a 1 degree of freedom (DoF) motion experiment with a prescribed motion amplitude and frequency to then iteratively predict the response of the free vibrating body \cite{sarpkaya}. This technique has been validated various times by independent researchers such as Morse and Williamson \cite{morse2009}, Dahl \cite{dahl2008}\cite{dahl2019}, Kahlak \cite{khalak1999}, and Gopalkrishnan \cite{gopa1993}. This has proven to also be an effective technique for 2 DoF which was studied by Dahl and Aktosun \cite{aktosun} but for simplicity, only the 1 DoF problem will be used to describe the technique in this section. The forced motion is governed by by 4 dimensionless parameters which are the reduced velocity $V_r$, cross flow (CF) amplitude $A_y*$, inline (IL) amplitude $A_x*$, and the phase offset $\phi$ between the frequencies of motion. These terms are defined below in equations (5-7) where $U$ is the free stream velocity, $f$ is the frequency of motion, $L$ is the characteristic length which in this case is the cylinder diameter, and $A$ represents the amplitude of motion in either direction.
 
-\begin{gather}
-    V_r = \frac{U}{fL}   \\
-    A_y^* = \frac{A_y}{L} \\
-    A_x^* = \frac{A_x}{L} 
-\end{gather}
+$$V_r = \frac{U}{fL}$$
+
+$$A_y^* = \frac{A_y}{L}$$
+    
+$$A_x^* = \frac{A_x}{L}$$ 
 
 The problem can be modeled as an oscillating damped spring mass system such as what is shown in figure \ref{fig:spring_mass} where the motion and lift force are described by:
 
-\begin{equation}
-    y = A_y\sin{(\omega t)}
-\end{equation}
-\begin{equation}
-    F_L = F_y\sin{(\omega t + \theta)}
-\end{equation}
+$$y = A_y\sin{(\omega t)}
+
+$$F_L = F_y\sin{(\omega t + \theta)}
 
 \noindent where in this case, $\theta$ is the phase offset between the motion of the body and the force acting on the body. The phase offset $\theta$ between the forces and the motion is different than the phase offset, $\phi$ between the CF and IL frequencies of motion. This simple example of the damped spring mass system is known to be a second order, ordinary differential equation (ODE) which there are numerous techniques to solve.
 
@@ -300,19 +291,15 @@ The problem can be modeled as an oscillating damped spring mass system such as w
 
 This expansion of the sinusoidal lift force decomposes the force into 2 components: lift in phase with velocity, and lift in phase with acceleration, as shown in equations (11) and (12) respectively. 
 
-\begin{gather}
-    C_{Lv} = C_L\sin{\theta} \\
-    C_{La} = C_L\cos{\theta}
-\end{gather}
+$$C_{Lv} = C_L\sin{\theta}$$
+    
+$$C_{La} = C_L\cos{\theta}$$
 
 Assuming $C_{Lv}$ is a measure of fluid excitation from the body and $C_{La}$ is an effective added mass, using the general form of a second order ODE for a spring mass damper system ($m\ddot{y}+b\dot{y}+ky=F$), these phased force terms can be substituted and solved analytically. This derivation was given in detail by Sarpkaya \cite{sarpkaya}, and Khalak and Williamson \cite{khalak1999} in their work studying forced motion experiments. These phased forces can be calculated in multiple different ways, but in this study the inner product technique shown in equations (13) and (14) derived by Smogeli will be used \cite{smogeli2002}. This technique is essentially cycle averaging the inner products between lift and motion, resulting in no need for Fourier transformations.
 
-\begin{equation}
-    C_{Lv} = \frac{1}{N}\sum_{i=1}^N \sqrt{\frac{2}{T_i}}\frac{\langle C_{Li}(t),\dot{y}_i(t)\rangle}{\sqrt{\langle\dot{y}_i(t),\dot{y}_i(t)\rangle}}
-\end{equation}
-\begin{equation}
-    C_{La} = \frac{1}{N}\sum_{i=1}^N \sqrt{\frac{2}{T_i}}\frac{\langle C_{Li}(t),\ddot{y}_i(t)\rangle}{\sqrt{\langle\ddot{y}_i(t),\ddot{y}_i(t)\rangle}}
-\end{equation}
+$$C_{Lv} = \frac{1}{N}\sum_{i=1}^N \sqrt{\frac{2}{T_i}}\frac{\langle C_{Li}(t),\dot{y}_i(t)\rangle}{\sqrt{\langle\dot{y}_i(t),\dot{y}_i(t)\rangle}}$$
+
+$$C_{La} = \frac{1}{N}\sum_{i=1}^N \sqrt{\frac{2}{T_i}}\frac{\langle C_{Li}(t),\ddot{y}_i(t)\rangle}{\sqrt{\langle\ddot{y}_i(t),\ddot{y}_i(t)\rangle}}$$
 
 Because these forced motion studies have been repeated experimentally so many times, there are data sets and repeated results providing these phased force coefficients that can be used as a direct comparison with the simulated results in this study. For 1 DoF motion, data from Morse and Williamson, and for 2 DoF motion, data from Aktosun et al. is used.
 
