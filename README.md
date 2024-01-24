@@ -40,102 +40,10 @@ The defined $n$ can then be used to define the characteristic length of all mode
 
 As described in section 2, in order to set up geometries in WaterLily, SDFs must be defined. The SDFs used are defined in table \ref{tab:sdf}. For cylindrical geometries, the aspect ratios used in this study are chosen to be the same as the model data used to achieve the expected results in order to make a more direct comparison.
 
-\newcounter{y}
-\setcounter{y}{0}
-\begin{table}[H]
-\centering
-% \renewcommand{\arraystretch}{2}
-    \begin{tabular}[t]{|c|c|c|}
-        \hline 
-        Name & SDF Formula & Shape \\
-        \hline 
-        \hline
-        
-        Circle  &
-        $SDF = \sqrt{(x-c_x)^2 + (y-c_y)^2} - r$ &
-        \begin{tikzpicture}
-            \draw (0,0) circle (1.25);
-            \fill[fill=black] (0,0) circle (1pt);
-            \node at (-0.2,0) {$\vec{c}$};
-            \draw[dashed] (0,0) -- node[above]{$r$} (1.25,0);
-        \end{tikzpicture} \\
-        \hline
 
-        Cylinder &
-        $SDF = \sqrt{(x-c_x)^2 + (y-c_y)^2} - r$ &
-        \begin{tikzpicture}
-            \draw (0,0) ellipse (1.25 and 0.5);
-            \draw (-1.25,0) -- (-1.25,-3.5);
-            \draw (-1.25,-3.5) arc (180:360:1.25 and 0.5);
-            \draw [dashed] (-1.25,-3.5) arc (180:360:1.25 and -0.5);
-            \draw (1.25,-3.5) -- (1.25,0);  
-            \draw [dashed] (0,0) -- (0,-3.5);
-            \node at (0,-3.5) {\tiny{$\bullet$}};
-            \node at (0,-1.75) {\tiny{$\bullet$}};
-            \node at (-0.2,-1.75) {$\vec{c}$};
-            \fill [gray,opacity=0.5] (-1.25,0) -- (-1.25,-3.5) arc (180:360:1.25 and 0.5) -- (1.25,0) arc (0:180:1.25 and -0.5);
-            \fill[fill=black] (0,0) circle (1pt);
-            \draw[dashed] (0,0) -- node[above]{$r$} (1.25,0);
-
-            % \coordinate (h1) at (-1.55,0);
-            % \coordinate (h2) at (-1.55,-3.5);
-            % \draw [dimen] (h1) -- (h2) node {$L$};
-        \end{tikzpicture} \\
-        \hline
-
-        Sphere &
-        $SDF = \sqrt{(x-c_x)^2 + (y-c_y)^2 + (z-c_z)^2} - r$ & 
-        \begin{tikzpicture}
-            \shade[ball color = gray!40, opacity = 0.4] (0,0) circle (1.25cm);
-            \draw (0,0) circle (1.25cm);
-            \draw (-1.25,0) arc (180:360:1.25 and 0.6);
-            \draw[dashed] (1.25,0) arc (0:180:1.25 and 0.6);
-            \fill[fill=black] (0,0) circle (1pt);
-            \draw[dashed] (0,0) -- node[above]{$r$} (1.25,0);
-            \node at (-0.2,0) {$\vec{c}$};
-        \end{tikzpicture} \\
-        \hline
-
-        Normal Facing Disk &
-        \makecell{$R = \sqrt{y^2 + z^2}$ \\
-        $SDF = \sqrt{[x^2,(R-\text{min}(R,r))^2]}-t$ \\
-        $map = [x,y,z] - [c_x,c_y,c_z]$} &
-        \begin{tikzpicture}[rotate=90]
-            \draw (0,0) ellipse (1.25 and 0.5);
-            \draw (-1.25,0) -- (-1.25,-1.5);
-            \draw (-1.25,-1.5) arc (180:360:1.25 and 0.5);
-            \draw [dashed] (-1.25,-1.5) arc (180:360:1.25 and -0.5);
-            \draw (1.25,-1.5) -- (1.25,0);  
-            \draw [dashed] (0,0) -- (0,-1.5);
-            \node at (0,-1.5) {\tiny{$\bullet$}};
-            \node at (0,-0.75) {\tiny{$\bullet$}};
-            \node at (-0.2,-0.75) {$\vec{c}$};
-            \fill [gray,opacity=0.5] (-1.25,0) -- (-1.25,-1.5) arc (180:360:1.25 and 0.5) -- (1.25,0) arc (0:180:1.25 and -0.5);
-            \fill[fill=black] (0,0) circle (1pt);
-            \draw[dashed] (0,0) -- node[left]{$r$} (1.25,0);
-            
-            \coordinate (d1) at (-1.5,0);
-            \coordinate (d2) at (-1.5,-1.5);
-            \draw [dimen] (d1) -- (d2) node {$t$};
-        \end{tikzpicture} \\
-        \hline
-
-        NACA0012 &
-        Discrete points from airfoil database \cite{naca} &
-        \begin{tikzpicture}
-            \foreach \lbl / \fn in {naca0012.dat}{
-                \draw[scale=3] node {}
-                    plot file{\fn} -- cycle;
-                \stepcounter{y}}   
-            \coordinate (n1) at (0,-0.5);
-            \coordinate (n2) at (3,-0.5); 
-            \draw [dimen] (n1) -- (n2) node {$L$};
-        \end{tikzpicture}  \\
-        \hline
-    \end{tabular}
-    \caption{Signed distance functions (SDFs) are defined via their analytic definitions, and most of these geometries are based on the general shape of a circle so defining the equations becomes fairly similar. For example, the circle and cylinder are almost exactly the same except if the domain is defined as 3D, the circle is extruded to the height of the domain thus constructing a cylinder. Due to the asymmetric nature of the airfoil, that must be defined by a parametric equation using the foil thickness as a function of length.}
-    \label{tab:sdf}
-\end{table}
+<p align="center">
+  <img src="all SDFs.PNG" />
+</p>
 
 \subsection{Convergence Testing}
 There is a trade space between computational expense and the accuracy of the results which once defined, acts as the point just before diminishing returns or accuracy are achieved. In order to justify the resolution used for these simulations, incrementally refining the effective grid resolution, relative geometry sizes, and time step must be done. Because of the differences in geometry of this study, convergence can be achieved at different resolutions depending on the body being modeled, which is especially true for the moving geometries for forced motion. The criteria for static geometry convergence is set to a non-zero steady mean lift coefficient and a steady drag coefficient that does not change significantly from the previously tested resolution. The moving geometries adhere to the same criteria, but also are subject to phased force coefficient convergence similar to drag. These terms are described in more detail in the next section. Lastly, although each individual simulation may converge at a different resolution, whichever requires the most refined grid will set the grid for every simulation as a means to make them more directly comparable. The domain size and relative geometry size are shown in figure \ref{fig:comp_domain}, but for reference, lets call the $y$-direction $n$, so $n=20D$ and $D=n/20$ and the $z$-direction is $10D$. The time step convergence is shown in figure X, but for convenience, the final value used in this study is $\Delta tU/D=$ 0.005.
@@ -162,38 +70,19 @@ $$A_x^* = \frac{A_x}{L}$$
 
 The problem can be modeled as an oscillating damped spring mass system such as what is shown in figure \ref{fig:spring_mass} where the motion and lift force are described by:
 
-$$y = A_y\sin{(\omega t)}
+$$y = A_y\sin{(\omega t)}$$
 
-$$F_L = F_y\sin{(\omega t + \theta)}
+$$F_L = F_y\sin{(\omega t + \theta)}$$
 
 \noindent where in this case, $\theta$ is the phase offset between the motion of the body and the force acting on the body. The phase offset $\theta$ between the forces and the motion is different than the phase offset, $\phi$ between the CF and IL frequencies of motion. This simple example of the damped spring mass system is known to be a second order, ordinary differential equation (ODE) which there are numerous techniques to solve.
 
-\begin{figure}[H]
-    \centering
-
-    \begin{circuitikz}
-        \centering
-        \pattern[pattern=north east lines] (0,0) rectangle (7,.25);
-        \draw[thick] (0,.25) -- (7,.25);
-        
-        \draw (3,.25) to[spring, l=$k$] (3,2);
-        \draw (4,.25) to[damper, l_=$b$] (4,2);
-        \draw[fill=gray!40] (3.5,2.25) circle [radius = 15pt] (4.5,3);
-        \node at (3.5,2.25) {$m$};
-        
-        \draw[thick, ->] (1,2.25) -- (2.5,2.25);
-        \node at (0.75,2.25) {$U$};
-    \end{circuitikz}
-    
-    \caption{This shows the damped spring mass system which models the free vibration response problem for 1 DoF motion. The body with mass $m$ is free to move perpendicular to the free stream and oscillates at some amplitude and frequency governed by the spring constant $k$, damping coefficient $b$, mass $m$, and free stream velocity $U$.}
-    \label{fig:spring_mass}
-\end{figure}
+<p align="center">
+  <img src="spring_mass.png" />
+</p>
 
 \noindent Using the sum and difference trigonometric identity, equation (9) can be expanded as follows:
 
-\begin{equation}
-    F_L = F_y\sin{(\omega t)}\cos(\theta) + F_y\cos{(\omega t)}\sin(\theta)
-\end{equation}
+$$F_L = F_y\sin{(\omega t)}\cos(\theta) + F_y\cos{(\omega t)}\sin(\theta)$$
 
 This expansion of the sinusoidal lift force decomposes the force into 2 components: lift in phase with velocity, and lift in phase with acceleration, as shown in equations (11) and (12) respectively. 
 
