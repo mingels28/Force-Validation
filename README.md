@@ -10,39 +10,11 @@ $$sdf_{circle}(\vec{x},t) = \sqrt{P_x^2 + P_y^2} - r$$
 
 $$map_{center}(\vec{x},t) = [P_x, P_y] - [c_x, c_y]$$
 
-\begin{figure}[H]
-    \centering
-    \begin{tikzpicture}
-        %rectangle
-        \node [body,minimum height=6cm,minimum width=6cm,anchor=south west] (body1) at (0,0) {};  
-        
-        %circle
-        \draw[draw=black,very thick] (3,3) circle (0.5);
-        \node at (2.4,2.4) {$\diameter 2r$};
-        
-        %axis
-        \draw[draw=black,thick,->] (0.5,0.4) -- +(xyz cs:x=1);
-        \draw[draw=black,thick,->] (0.5,0.4) -- +(xyz cs:y=1);
-        \node at (1.65,0.4) {$x$};
-        \node at (0.5,1.55) {$y$};
+<p align="center">
+  <img src="sdf.png" />
+</p>
 
-        %point P
-        \node at (4.5,4.5) {$\bullet$};
-        \node at (5.00,4.80) {$(P_x,P_y)$};
-        \coordinate (P) at (4.5,4.5);
 
-        %points S
-        \node at (3.35,3.35) {$\bullet$};
-        \node at (4.10,3.25) {$(c_x,c_y)$};
-        \coordinate (S) at (3.35,3.35);
-
-        %connecting line
-        \draw [thick, black, dotted]  (P) -- (S);      
-    \end{tikzpicture}
-
-    \caption{This figure represents a 2D example of how the SDF of a circle is used in the WaterLily simulation domain. The arbitrary point $P$ is cycled through all points in the domain and the shortest distance to the body is the signed distance, as shown by the dotted line connecting point $P$ and $S$. A negative SDF value means $P$ is inside the body, a positive value means it is outside the body, and a value between -1 and 1 indicates the point is on the boundary of the body. Every instance of point $P$ is relative to the center of the body and in this case, is offset by the radius $r$.}
-    \label{fig:sdf_example}
-\end{figure}
 
 SDFs can be extended to 3D geometries by adding a third dimension and because of how WaterLily is designed, the fluid structure interaction calculations easily adapt. By combining SDF equations such as ellipses, planes, and line segments, complex geometries can be set up and with the the mapping function, they can experience forced motion, or even a free vibration response.
 
@@ -62,75 +34,9 @@ In order to calculate the forces of the previously mentioned geometries in Water
 
 The defined $n$ can then be used to define the characteristic length of all modeled geometries. For everything except the airfoil, $L=n/20$ is used. The airfoil however, needs a larger domain to mitigate wall effects so that will use $L=n/40$. For reference, in the case of the circle if $L$ serves as the circle's diameter, this allows approximately 13 grid points per diameter. An example of the computational domain using a static cylinder is shown in figure \ref{fig:comp_domain}. Lastly, the time vector for the simulation to run is set to run from 0 to 200 scaled time units, with the step size being 0.05 allowing for 4000 time steps for a single simulation. Through convergence testing in WaterLily on a static circular cylinder, these spatial and temporal resolutions showed to have diminishing returns at more refined values than these.
 
-\begin{figure}[H]
-    \centering
-    \begin{tikzpicture}[scale=0.8]
-        %circle
-        \draw[draw=black,very thick] (2.5,2.5) circle (0.25);
-
-        %axis and misc text
-        % \draw[draw=black,thick,->] (0.5,0.4) -- +(xyz cs:x=1);
-        % \draw[draw=black,thick,->] (0.5,0.4) -- +(xyz cs:y=1);
-        % \draw[draw=black,thick,->] (0.5,0.4) -- +(xyz cs:z=-1);
-        \draw[draw=black,thick,->] (1.0,1.0) -- +(xyz cs:x=1);
-        \draw[draw=black,thick,->] (1.0,1.0) -- +(xyz cs:y=1);
-        \draw[draw=black,thick,->] (1.0,1.0) -- +(xyz cs:z=1);
-        \node at (1.75,0.75) {$x$};
-        \node at (0.75,1.65) {$y$};
-        \node at (0.95,0.60) {$z$};
-
-        % rectangle
-        \coordinate (b1) at (0,0);
-        \coordinate (b2) at (10,0);
-        \coordinate (b3) at (10,5);
-        \coordinate (b4) at (0,5);
-        \draw [thick, black]  (b1) -- (b2);
-        \draw [thick, black]  (b2) -- (b3);
-        \draw [thick, black]  (b3) -- (b4);
-        \draw [thick, black]  (b4) -- (b1);
-
-        %attempt to make 2D into 3D
-        \coordinate (b5) at (11,1);
-        \coordinate (b6) at (11,6);
-        \coordinate (b7) at (1,6);
-        \coordinate (b8) at (1,1);
-        \draw [thick, black]  (b2) -- (b5);
-        \draw [thick, black]  (b3) -- (b6);
-        \draw [thick, black]  (b4) -- (b7);
-        \draw [thick, black]  (b5) -- (b6);
-        \draw [thick, black]  (b6) -- (b7);
-
-        \draw [thick, black, dotted]  (b1) -- (b8);
-        \draw [thick, black, dotted]  (b7) -- (b8);
-        \draw [thick, black, dotted]  (b5) -- (b8);
-        
-        \coordinate (c1) at (2.5+0.177,2.5-0.177);
-        \coordinate (c2) at (2.5-0.177,2.5+0.177);
-        \coordinate (c3) at (2.5+0.177+1,2.5-0.177+1);
-        \coordinate (c4) at (2.5-0.177+1,2.5+0.177+1);
-        \draw [very thick, black] (c1) -- (c3);
-        \draw [very thick, black] (c2) -- (c4);
-        \draw [very thick, black] (c4) arc (135:-45:0.25);
-        \draw [very thick, black, dotted] (c3) arc (-45:-225:0.25);
-        
-        % Dimensions
-        \draw (b1) -- ++(-1,0) coordinate (D1) -- +(-5pt,0);
-        \draw (b4) -- ++(-1,0) coordinate (D2) -- +(-5pt,0);
-        \draw [dimen] (D1) -- (D2) node {$20D$};
-        \draw (b1) -- ++(0,-1) coordinate (D1) -- +(0,-5pt);
-        \draw (b2) -- ++(0,-1) coordinate (D2) -- +(0,-5pt);
-        \draw [dimen] (D1) -- (D2) node {$40D$};
-        \draw (b2) -- ++(1,0) coordinate (D1) -- +(5pt,0);
-        \draw (b5) -- ++(1,0) coordinate (D2) -- +(5pt,0);
-        \draw [dimen] (D1) -- (D2) node {$10D$};
-        \node at (3.0,2.2) {$\diameter D$};
-        
-    \end{tikzpicture}
-
-    \caption{This figure shows the computational domain set up in WaterLily for a static cylinder. The boundary conditions are Neumann at the inlet, free convection at the outlet, slip on all of the walls, and no-slip on the body itself. In the case of the cylinder, because the span covers the full domain height, a periodic condition is used for the floor and ceiling in order to stop flow from coalescing. The viewing angle in this figure is looking up through the floor of the domain for reference. For the other geometries used in this study, their centers are all located at the same location which is at $[x,y,z]=[10D,10D,5D]$.}
-    \label{fig:comp_domain}
-\end{figure}
-
+<p align="center">
+  <img src="domain.png" />
+</p>
 
 As described in section 2, in order to set up geometries in WaterLily, SDFs must be defined. The SDFs used are defined in table \ref{tab:sdf}. For cylindrical geometries, the aspect ratios used in this study are chosen to be the same as the model data used to achieve the expected results in order to make a more direct comparison.
 
