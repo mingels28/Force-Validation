@@ -124,6 +124,14 @@ In order to justify the claim that the forces calculated by this model and routi
     \label{tab:static_coeffs}
 \end{table}
 
+| Geometry | $$C_L$$ | $$C_D$$ | Source |
+| :------: | :-----: | :-----: | :----: |
+| 2D Circle | 0 | 1.00-1.50 | Newman Hydrodynamics |
+| 2D NACA0012 <br>$$AoA = 6&deg$$ | 0.18-0.22 | 0.05-0.10 | Yasuda |
+| Circular Cylinder | 0 | 1.00-1.50 | Newman Hydrodynamics |
+| Sphere | 0 | 0.30-0.50 | Newman Hydrodynamics |
+| Normal Facing Thin Disk | 0 | 1.10-1.20 | Clift |
+
 \begin{table}[H]
     \centering
     \begin{tabular}{|c|c|c|c|}
@@ -139,6 +147,11 @@ In order to justify the claim that the forces calculated by this model and routi
     \caption{Expected lift and drag force coefficients for smooth dynamic geometries at a Reynolds number of 12,000 and 7620, for 1 DoF and 2 DoF motion respectively. The motion parameters used for the 1 DoF study are $V_r$=11.6 and $A_y^*$=1.325. For the 2 DoF study, $V_r$=6.0, $A_y^*$=0.600, $A_x^*$=0.200, and $\phi$=150$^{\circ}$ were used.}
     \label{tab:dynamic_coeffs}
 \end{table}
+
+| Geometry | $$C_{Lv}$$ | $$C_{EA}$$ | Source |
+| :------: | :-----: | :-----: | :----: |
+| 1 DoF Forced Motion Cylinder <br>$$Vr=5.0, Ay/D=0.4, Re=4000$$ | 0.00-0.80 | -0.6-0.0 | Morse |
+| 2 DoF Forced Motion Cylinder <br>$$Vr=6.0, Ay/D=0.6, Ax/D=0.2, \phi=-180&deg, Re=7620$$| -1.67--2.50 | 1.65-2.40 | Aktosun |
 
 \subsection{Source Experimental Details}
 Although some of these experiments have been independently repeated and studied for decades such as the static cylinder, sphere, and normal facing disk, some of these experiments require further explanation to further justify the comparisons being made in this study. The less conventional experiments in which data was used in this study will be briefly described in this section before presenting the simulation results from WaterLily. With the exception of the airfoil, all measured experiments were done in a tow tank but it is important to describe the respective setups to further validate the simulation setup and decisions used here.
