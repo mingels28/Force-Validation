@@ -25,8 +25,7 @@ function disk(p=7;Re=1000,U=1,mem=Array,ϵ=0.1)
     map(xyz,t) = rot_mat*(xyz - SA[n/2,n/2,n/2])
    
     #3D simulation
-    Simulation((2n,n,n),(U,0,0),L;U,ν=U*L/Re,
-        body=AutoBody(sdf,map),mem=mem,T=Float32,ϵ=ϵ) 
+    Simulation((2n,n,n),(U,0,0),L;U,ν=U*L/Re,body=AutoBody(sdf,map),mem=mem,T=Float32,ϵ=ϵ) 
 end
 
 """ function to increment time step and calculate forces """
@@ -41,7 +40,7 @@ end
 p        = 8     #effective grid resolution
 Re       = 10000 #Reynolds number
 step     = 0.05  #time step for recording data
-duration = 200   #length of simulation
+duration = 20   #length of simulation
 
 """ initialize the simulation """
 sim  = disk(p;Re=Re,mem=CUDA.CuArray); 
