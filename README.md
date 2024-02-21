@@ -148,7 +148,7 @@ There are two cases of circular cylinders modeled with dynamic boundaries in thi
   <img src="figures/ThreeD_dynamicforces.png"/>
 </p>
 
-Both plots show the velocity of the moving boundary as well as the corresponding lift force. The lift force shows to be well synchronized with the motion which leads to the accuracy of the phased force coefficients. The 1 DoF motion simulation gives values for $C_{Lv}$ and $C_{La}$ of -0.8 and 0.0 respectively which is essentially exact when compared to Morse and Williamson's measured data. The 2 DoF simulation also shows similar accuracy to the reference data however that data set is far more coarse so the range of correctness is wider. The values of $C_{Lv}$ and $C_{La}$ are -1.68 and 1.61 which similarly to the 1 DoF agree with the reference data set.
+Both plots show the velocity of the moving boundary as well as the corresponding lift force. The lift force shows to be well synchronized with the motion which leads to the accuracy of the phased force coefficients. The 1 DoF motion simulation gives values for $C_{Lv}$ and $C_{EA}$ of -0.8 and 0.0 respectively which is essentially exact when compared to Morse and Williamson's measured data. The 2 DoF simulation also shows similar accuracy to the reference data however that data set is far more coarse so the range of correctness is wider. The values of $C_{Lv}$ and $C_{EA}$ are -1.68 and 1.61 which, similarly to the 1 DoF data, agrees with the reference data set.
 
 
 ## Discussion and Conclusions
