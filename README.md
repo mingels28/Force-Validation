@@ -103,7 +103,7 @@ In order to justify the claim that the forces calculated by this model and routi
 | Geometry | $$C_L$$ | $$C_D$$ | Source |
 | :------: | :-----: | :-----: | :----: |
 | 2D Circle | 0 | 1.00-1.50 | Newman Hydrodynamics [11]|
-| 2D NACA0012 <br>$$AoA = 10&deg$$ | 0.18-0.22 | 0.05-0.10 | Yamaguchi [13]|
+| 2D NACA0012 <br>$$AoA = 10&deg$$ | 0.18-0.22 | -- | Yamaguchi [13]|
 | Circular Cylinder | 0 | 1.00-1.50 | Newman Hydrodynamics [11]|
 | Sphere | 0 | 0.30-0.50 | Newman Hydrodynamics [11]|
 | Normal Facing Thin Disk | 0 | 1.10-1.20 | Clift [5]|
