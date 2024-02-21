@@ -12,7 +12,7 @@ $$sdf_{circle}(\vec{x},t) = \sqrt{P_x^2 + P_y^2} - r$$
 $$map_{center}(\vec{x},t) = [P_x, P_y] - [c_x, c_y]$$
 
 <p align="center">
-  <img src="sdf.png" />
+  <img src="figures/sdf.png" />
 </p>
 
 
@@ -38,26 +38,23 @@ In order to calculate the forces of the previously mentioned geometries in Water
 The defined $n$ can then be used to define the characteristic length of all modeled geometries. For everything except the airfoil, $L=n/20$ is used. The airfoil however, needs a larger domain to mitigate wall effects so that will use $L=n/40$. For reference, in the case of the circle if $L$ serves as the circle's diameter, this allows approximately 13 grid points per diameter. An example of the computational domain using a static cylinder is shown in figure below. Lastly, the time vector for the simulation to run is set to run from 0 to 200 scaled time units, with the step size being 0.05 allowing for 4000 time steps for a single simulation. Through convergence testing in WaterLily on a static circular cylinder, these spatial and temporal resolutions showed to have diminishing returns at more refined values than these.
 
 <p align="center">
-  <img src="domain.png" />
+  <img src="figures/domain.png" />
 </p>
 
 As described in the previous section, in order to set up geometries in WaterLily, SDFs must be defined. The SDFs used are defined below. For cylindrical geometries, the aspect ratios used in this study are chosen to be the same as the model data used to achieve the expected results in order to make a more direct comparison. It should be noted that the circle and cylinder SDFs are written as exactly the same but the difference is that in a 2D domain, there is no extrusion and in a 3D domain, the span will be the height of the domain.
 
 
 <p align="center">
-  <img src="all SDFs.PNG" />
+  <img src="figures/all SDFs.PNG" />
 </p>
 
 
 ## Convergence Testing
 There is a trade space between computational expense and the accuracy of the results which once defined, acts as the point just before diminishing returns or accuracy are achieved. In order to justify the resolution used for these simulations, incrementally refining the effective grid resolution, relative geometry sizes, and time step must be done. Because of the differences in geometry of this study, convergence can be achieved at different resolutions depending on the body being modeled, which is especially true for the moving geometries for forced motion. The criteria for static geometry convergence is set to a non-zero steady mean lift coefficient and a steady drag coefficient that does not change significantly from the previously tested resolution. The moving geometries adhere to the same criteria, but also are subject to phased force coefficient convergence similar to drag. These terms are described in more detail in the next section. Lastly, although each individual simulation may converge at a slightly different resolution, whichever requires the most refined grid will set the grid for every simulation as a means to make them more directly comparable. The domain size and relative geometry size are shown in the previous section, but for reference, lets call the $y$-direction $n$, so $n=20D$ and $D=n/20$ and the $z$-direction is $10D$. The time step convergence is shown in figure X, but for convenience, the final value used in this study is $\Delta tU/D=$ 0.005.
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\textwidth]{sphere_convergence.eps}
-    \caption{Spatial convergence testing on the sphere geometry is done by incriminating the characteristic resolution "$p$", of the domain by 1 for every simulation. For example, when $p=7$, the domain is of size $[x,y,z]=[(2)(2^7),(2^7),(0.5)(2^7)]$. The results show that at $p=8$, the lift converges to 0 and the drag is relatively steady so that is the value that is used in this study.}
-    \label{fig:sphere_convergence}
-\end{figure}
+<p align="center">
+  <img src="figures/sphere_convergence.png"/>
+</p>
 
 A sample result from the convergence testing on the sphere is shown above. As the grid resolution increases, the lift coefficient shows to converge to about 0 which is expected and the drag coefficient converges to approximately 0.35 which is also reasonable. At the lower resolutions the results appear to be more steady but they are converging to poor values in terms of accuracy relative to measured data. As the grid cubes become more refined, the construction of the sphere becomes closer to being a curved surface like a sphere actually is. With a coarse resolution the sphere is modeled as being somewhat jagged and the resulting pressure force will not be accurate because of that.
 
@@ -78,7 +75,7 @@ $$F_L = F_y\sin{(\omega t + \theta)}$$
 \noindent where in this case, $\theta$ is the phase offset between the motion of the body and the force acting on the body. The phase offset $\theta$ between the forces and the motion is different than the phase offset, $\phi$ between the CF and IL frequencies of motion. This simple example of the damped spring mass system is known to be a second order, ordinary differential equation (ODE) which there are numerous techniques to solve.
 
 <p align="center">
-  <img src="spring_mass.png" />
+  <img src="figures/spring_mass.png"/>
 </p>
 
 \noindent Using the sum and difference trigonometric identity, equation (9) can be expanded as follows:
@@ -130,23 +127,17 @@ The 2 DoF forced motion study done by Aktosun and Dahl \cite{aktosun} ran simila
 ## 2D Geometries
 For the 2D geometries modeled in this study, the circle and NACA0012 foil, DNS results are used to compare WaterLily's forces because it would be impossible to experimentally measure a completely 2D body.
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\textwidth]{circle_forces_temp.eps}
-    \caption{this is a placeholder until the parametricbodies force is figured out. The circle is correct on the left but the rightside plot is not relevant.}
-    \label{fig:static2D}
-\end{figure}
+<p align="center">
+  <img src="figures/TwoD_forces.png"/>
+</p>
 
 
 ## 3D Static Geometries
 There are three, 3D static geometries modeled in this study: sphere, circular cylinder, and a disk normal to the direction of flow. 
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\textwidth]{static_geometries-forces.png}
-    \caption{The force time series data shown is run for 200 non-dimensional increments with a step of 0.05 allowing for 4000 samples. The data shows to effectively converge after a about half of this full duration and that converged value can be averaged to find the lift and drag coefficient for the geometry. Currently the cylinder has a non-zero lift coefficient but it is probably because of the boundary condition.}
-    \label{fig:static3D}
-\end{figure}
+<p align="center">
+  <img src="figures/ThreeD_staticforces.png"/>
+</p>
 
 Data from both of these geometries show to effectively converge at a scaled time value of approximately 50 where the mean lift coefficients show to be 0, and the drag coefficients show to be -0.35 and -1.50 for the sphere and cylinder respectively. Both of these values are within the ranges of expected values for these geometries for a Reynolds number of 10,000, referenced in tables from the previous section. From looking exclusively at the time series data, it can be inferred that the wake of the sphere has less of an asymmetric behavior than the cylinder because of the large relative amplitudes of the lift and drag seen in the cylinder data. Despite the more intense oscillatory behavior from the cylinder force data, the forces still become steady and consistent fairly quickly. 
 
@@ -154,18 +145,14 @@ Data from both of these geometries show to effectively converge at a scaled time
 ## 3D Dynamic Geometries
 There are two cases of circular cylinders modeled with dynamic boundaries in this study: 1 Degree of Freedom (DoF) motion perpendicular the free stream (cross flow or "CF") and 2 DoF motion which is both CF and parallel to the free stream (inline or "IL"). The motion parameters used for the 1 DoF data are $V_r=5$ and $A_y^\*=0.4$ and the motion parameters used for the 2 DoF data are $Vr=6$, $A_y^\*=0.6$, $A_x^\*=0.2$, and $\phi=-180^{\circ}$. Adding IL motion to the simulation significantly increases the amount of possible motion combinations, so in order to simplify this, a frequency relationship between the two directions is imposed. The relationship is set somewhat arbitrarily as the IL motion frequency is 2 times the CF motion frequency.
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\textwidth]{dynamic_geometries-forces.eps}
-    \caption{The force time series data shown is 8 cycles from simulations of 200 non-dimensional increments with a step of 0.05 allowing for 4000 samples. The data shows that the force is well synchronized with the motion which reinforces the accuracy of the phased force coefficients.}
-    \label{fig:dynamic3D}
-\end{figure}
+<p align="center">
+  <img src="figures/ThreeD_dynamicforces.png"/>
+</p>
 
-Both plots in figure \ref{fig:dynamic3D} show the velocity of the moving boundary as well as the corresponding lift force. he lift force shows to be well synchronized with the motion which leads to the accuracy of the phased force coefficients. The 1 DoF motion simulation gives values for $C_{Lv}$ and $C_{La}$ of -0.8 and 0.0 respectively which is essentially exact when compared to Morse and Williamson's measured data. The 2 DoF simulation also shows similar accuracy to the reference data however that data set is far more coarse so the range of correctness is wider. The values of $C_{Lv}$ and $C_{La}$ are -1.68 and 1.61 which similarly to the 1 DoF agree with the reference data set.
+Both plots show the velocity of the moving boundary as well as the corresponding lift force. The lift force shows to be well synchronized with the motion which leads to the accuracy of the phased force coefficients. The 1 DoF motion simulation gives values for $C_{Lv}$ and $C_{La}$ of -0.8 and 0.0 respectively which is essentially exact when compared to Morse and Williamson's measured data. The 2 DoF simulation also shows similar accuracy to the reference data however that data set is far more coarse so the range of correctness is wider. The values of $C_{Lv}$ and $C_{La}$ are -1.68 and 1.61 which similarly to the 1 DoF agree with the reference data set.
 
 
 ## Discussion and Conclusions
-%somewhat of a palceholder until rest of results are completed
-To summarize the present study, a force routine capable of high performance with GPU processing was developed for the Julia flow model "WaterLily" and has been validated by comparing scaled force coefficients to measured data and high resolution independent simulations. Canonical problems such as flow over a circular cylinder and sphere were modeled as they are very well studied and show consistent results over decades of repeated experiments from independent researchers. WaterLily showed to agree well with force coefficients for both static boundaries as well as dynamic boundaries, in the cases presented of the forced motion cylinder. Although there is error presented in the form of not measuring exactly the same forces as experiments, these expected values are somewhat of a range of values due to the nature of experimental measurement. Forces measured become somewhat dependent on the experimental setup due to ambient conditions as well as the experiment set up as well. Because of the consistent agreement with the forces calculated with WaterLily's new force routine to measured data and high resolution numerical data, when relevant, this force routine can be considered sufficiently accurate for all arbitrary geometries. One limitation not presented in this study are forces at very high Reynolds number flows such as $Re=10^6$. This type of study would require the investigation into a wall model implementation. Based on the results of this study and previous work on developing the BDIM method, the upper limit of Reynolds number for this method is approximately $10^5$ \cite{audrey}. Another limitation not presented here is resolution convergence, such as with high frequency and high amplitude moving boundaries. Both cases for dynamic boundaries discussed in this study used fairly moderate reduced velocities and amplitudes which showed good force results at the temporal and spatial resolution used in WaterLily. However, as the motion becomes more intense high resolutions and possibly larger geometries may become necessary to achieve the same levels of accuracy. With the accuracy WaterLily's force routine, future work with this model can include problems such as free vibration response, using the force at each time step to calculate a reaction force on the freely moving geometry.
+To summarize the present study, a force routine capable of high performance with GPU processing was developed for the Julia flow model WaterLily and has been validated by comparing scaled force coefficients to measured data and high resolution independent simulations. Canonical problems such as flow over a circular cylinder and sphere were modeled as they are very well studied and show consistent results over decades of repeated experiments from independent researchers. WaterLily showed to agree well with force coefficients for both static boundaries as well as dynamic boundaries, in the cases presented of the forced motion cylinder. Although there is error presented in the form of not measuring exactly the same forces as experiments, these expected values are somewhat of a range of values due to the nature of experimental measurement. Forces measured become somewhat dependent on the experimental setup due to ambient conditions as well as the experiment set up as well. Because of the consistent agreement with the forces calculated with WaterLily's new force routine to measured data and high resolution numerical data, when relevant, this force routine can be considered sufficiently accurate for all arbitrary geometries. One limitation not presented in this study are forces at very high Reynolds number flows such as $Re=10^6$. This type of study would require the investigation into a wall model implementation. Based on the results of this study and previous work on developing the BDIM method, the upper limit of Reynolds number for this method is approximately $10^5$ \cite{audrey}. Another limitation not presented here is resolution convergence, such as with high frequency and high amplitude moving boundaries. Both cases for dynamic boundaries discussed in this study used fairly moderate reduced velocities and amplitudes which showed good force results at the temporal and spatial resolution used in WaterLily. However, as the motion becomes more intense high resolutions and possibly larger geometries may become necessary to achieve the same levels of accuracy. With the accuracy WaterLily's force routine, future work with this model can include problems such as free vibration response, using the force at each time step to calculate a reaction force on the freely moving geometry.
 
 \printbibliography
