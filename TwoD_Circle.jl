@@ -26,7 +26,7 @@ function get_force(sim,t)
 	sim_step!(sim, t, remeasure=false, verbose=true)
 	sz = size(sim.flow.p)
 	df = ones(Float32, tuple(sz..., length(sz))) |> CuArray
-	return -WaterLily.∮nds(sim.flow.p,df,sim.body,t*sim.L/sim.U)./(0.5*sim.L*sz[3]*sim.U^2)
+	return -WaterLily.∮nds(sim.flow.p,df,sim.body,t*sim.L/sim.U)./(0.5*sim.L*sim.U^2)
 end
 
 """ define the parameters for your simulation """

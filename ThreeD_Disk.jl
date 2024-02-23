@@ -7,7 +7,7 @@ function disk(p=7;Re=1000,U=1,mem=Array,ϵ=0.1)
     n = 2^p                     
     L = n/20
 
-    theta = 20*π/180
+    theta =0*π/180
     rot_mat = SA[1 0 0; 0 cos(theta) -sin(theta); 0 sin(theta) cos(theta)] #rotate about x-axis (pitch)
     # rot_mat = SA[cos(theta) 0 sin(theta); 0 1 0; -sin(theta) 0 cos(theta)] #rotate about y-axis (roll)
     # rot_mat = SA[cos(theta) -sin(theta) 0; sin(theta) cos(theta) 0; 0 0 1]  #rotate about z-axis (yaw)
@@ -33,7 +33,7 @@ function get_force(sim,t)
 	sim_step!(sim, t, remeasure=false, verbose=true)
 	sz = size(sim.flow.p)
 	df = ones(Float32, tuple(sz..., length(sz))) |> CuArray
-	return -WaterLily.∮nds(sim.flow.p,df,sim.body,t*sim.L/sim.U)./(0.5*sim.L*sz[3]*sim.U^2)
+	return -WaterLily.∮nds(sim.flow.p,df,sim.body,t*sim.L/sim.U)./(0.5*pi*sim/L^2/4*sim.U^2)
 end
 
 """ define the parameters for your simulation """
